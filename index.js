@@ -19,7 +19,11 @@ async function run(){
         const handToolsCollection = client.db("woodenToolsManufacturer").collection("handTools")
 
 
-        
+        app.get('/handTools', async(req, res)=>{
+            const tools = await handToolsCollection.find().toArray()
+            res.send(tools)
+        })
+       
     }finally{
 
     }
