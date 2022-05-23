@@ -17,13 +17,31 @@ async function run(){
     try{
         await client.connect()
         const handToolsCollection = client.db("woodenToolsManufacturer").collection("handTools")
+        const usersCollection = client.db("woodenToolsManufacturer").collection("users")
 
-
+        //  HAND TOOLS COLLECTION API
         app.get('/handTools', async(req, res)=>{
             const tools = await handToolsCollection.find().toArray()
             res.send(tools)
         })
-       
+        app.get('/handTools/:id', async(req, res)=>{
+            const id = req.params.id 
+            const query = {_id:ObjectId(id)}
+            const result = await handToolsCollection.findOne(query)
+            res.send(result)
+        })
+        //USER COLLECTION API
+        app.put('/users/:email', async(req, res)=>{
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result)
+        })
     }finally{
 
     }
