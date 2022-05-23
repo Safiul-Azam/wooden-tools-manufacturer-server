@@ -19,6 +19,7 @@ async function run(){
         const handToolsCollection = client.db("woodenToolsManufacturer").collection("handTools")
         const usersCollection = client.db("woodenToolsManufacturer").collection("users")
         const orderCollection = client.db("woodenToolsManufacturer").collection("order")
+        
 
         //  HAND TOOLS COLLECTION API
         app.get('/handTools', async(req, res)=>{
@@ -43,12 +44,24 @@ async function run(){
             const result = await usersCollection.updateOne(filter, updateDoc, options);
             res.send(result)
         })
+        app.get('/users',async(req, res)=>{
+            const user = await usersCollection.find().toArray()
+            res.send(user)
+        })
         // ORDER COLLECTION API
         app.post('/order',async(req, res)=>{
             const order = req.body 
             const result = await orderCollection.insertOne(order)
             res.send(result)
         })
+        app.get('/order/:email',async(req,res)=>{
+            const email = req.params.email 
+            const query = {email:email}
+            const result = await orderCollection.find(query).toArray()
+            res.send(result)
+        })
+        //REVIEW COLLECTION API
+        
     }finally{
 
     }
