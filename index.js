@@ -19,7 +19,7 @@ async function run(){
         const handToolsCollection = client.db("woodenToolsManufacturer").collection("handTools")
         const usersCollection = client.db("woodenToolsManufacturer").collection("users")
         const orderCollection = client.db("woodenToolsManufacturer").collection("order")
-        
+        const reviewCollection = client.db("woodenToolsManufacturer").collection("review")
 
         //  HAND TOOLS COLLECTION API
         app.get('/handTools', async(req, res)=>{
@@ -61,7 +61,11 @@ async function run(){
             res.send(result)
         })
         //REVIEW COLLECTION API
-        
+        app.post('/review',async(req, res)=>{
+            const review = req.body 
+            const result = await reviewCollection.insertOne(review)
+            res.send(result)
+        })
     }finally{
 
     }
