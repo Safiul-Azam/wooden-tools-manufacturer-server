@@ -18,6 +18,7 @@ async function run(){
         await client.connect()
         const handToolsCollection = client.db("woodenToolsManufacturer").collection("handTools")
         const usersCollection = client.db("woodenToolsManufacturer").collection("users")
+        const orderCollection = client.db("woodenToolsManufacturer").collection("order")
 
         //  HAND TOOLS COLLECTION API
         app.get('/handTools', async(req, res)=>{
@@ -40,6 +41,12 @@ async function run(){
                 $set: user,
             };
             const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result)
+        })
+        // ORDER COLLECTION API
+        app.post('/order',async(req, res)=>{
+            const order = req.body 
+            const result = await orderCollection.insertOne(order)
             res.send(result)
         })
     }finally{
