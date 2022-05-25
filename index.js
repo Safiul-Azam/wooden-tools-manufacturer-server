@@ -3,6 +3,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const app = express()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { get } = require('express/lib/response');
 const port = process.env.PORT || 5000
 require('dotenv').config()
 
@@ -116,6 +117,12 @@ async function run() {
             const user = await usersCollection.find().toArray()
             res.send(user)
         })
+        app.get('/users/:email', verifyJwt, async (req, res) => {
+            const email = req.params.email 
+            const query = {email:email}
+            const user = await usersCollection.findOne(query)
+            res.send(user)
+        })
         // ORDER COLLECTION API
         app.post('/order', async (req, res) => {
             const order = req.body
@@ -136,6 +143,19 @@ async function run() {
             } else {
                 return res.status(403).send({ message: 'forbidden access' })
             }
+        })
+        app.get('/order/:id',verifyJwt,async(req, res)=>{
+            const id = req.params.id 
+            const query = {_id:ObjectId(id)}
+            const result = await orderCollection.findOne(query)
+            res.send(result)
+
+        })
+        app.delete('/order/:id',verifyJwt, async(req, res)=>{
+            const id = req.params.id 
+            const query = {_id:ObjectId(id)}
+            const result = await orderCollection.deleteOne(query)
+            res.send(result)
         })
         //REVIEW COLLECTION API
         app.post('/review', verifyJwt, async (req, res) => {
