@@ -48,7 +48,7 @@ async function run() {
 
         //VERIFY ADMIN FUNCTION
         const verifyAdmin = async (req, res, next) => {
-            const requesterEmail = req.decoded.email
+            const requesterEmail = req.decoded?.email
             const requesterAccount = await usersCollection.findOne({email: requesterEmail })
             if (requesterAccount.role === 'admin') {
                 next()
@@ -59,7 +59,7 @@ async function run() {
 
         //  HAND TOOLS COLLECTION API
         app.post('/handTools',verifyJwt,verifyAdmin,async(req, res)=>{
-            const handTool = req.body 
+            const handTool = req?.body 
             const result = await handToolsCollection.insertOne(handTool)
             res.send(result)
         })
@@ -69,13 +69,13 @@ async function run() {
             res.send(tools)
         })
         app.get('/handTools/:id', async (req, res) => {
-            const id = req.params.id
+            const id = req.params?.id
             const query = { _id: ObjectId(id) }
             const result = await handToolsCollection.findOne(query)
             res.send(result)
         })
         app.delete('/handTools/:id',verifyJwt, verifyAdmin, async(req, res)=>{
-            const id = req.params.id 
+            const id = req?.params?.id 
             const query = {_id:ObjectId(id)}
             const result = await handToolsCollection.deleteOne(query)
             res.send(result)
@@ -83,7 +83,7 @@ async function run() {
         //USER COLLECTION API
         //Admin api
         app.put('/users/admin/:email', verifyJwt, verifyAdmin, async (req, res) => {
-            const email = req.params.email;
+            const email = req.params?.email;
             const filter = { email: email };
             const updateDoc = {
                 $set: { role: 'admin' },
@@ -134,8 +134,8 @@ async function run() {
             res.send(order)
         })
         app.get('/order/:email', verifyJwt, async (req, res) => {
-            const email = req.params.email
-            const decodedEmail = req.decoded.email
+            const email = req.params?.email
+            const decodedEmail = req.decoded?.email
             if (email === decodedEmail) {
                 const query = { email: email }
                 const result = await orderCollection.find(query).toArray()
@@ -145,7 +145,7 @@ async function run() {
             }
         })
         app.get('/order/:id',verifyJwt,async(req, res)=>{
-            const id = req.params.id 
+            const id = req.params?.id 
             const query = {_id:ObjectId(id)}
             const result = await orderCollection.findOne(query)
             res.send(result)
